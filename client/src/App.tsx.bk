@@ -1,0 +1,101 @@
+import { useState } from "react";
+import { Button } from "./components/ui/button";
+import { Input } from "./components/ui/input";
+import { useMutation, useQuery, useQueryClient } from "react-query";
+import { bookServices } from "./services/bookServices";
+import { toast } from "sonner";
+import { IBook } from "./types/entity";
+const initialBookValues: IBook = {
+  name: "",
+  description: "",
+  isbn: "",
+  author: "",
+  file: null,
+};
+
+export default function App() {
+  const [book, setBook] = useState(initialBookValues);
+  const queryClient = useQueryClient();
+
+  const {
+    data: books,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["books"],
+    queryFn: async () => bookServices.getData(),
+  });
+
+  const handleAddBook = useMutation({
+    mutationFn: bookServices.createData,
+    onSuccess: () => {
+      queryClient.invalidateQueries(["books"]);
+      toast.success("Buku berhasil disubmit!!");
+      setBook(initialBookValues);
+    },
+    onError: () => {
+      toast.error("Buku gagal disubmit!!");
+    },
+  });
+
+  return (
+    <div className="flex justify-center my-20">
+      <main className="w-[400px] space-y-4">
+        <h1 className="text-xl font-bold">Books</h1>
+        <section className="space-y-2">
+          <Input
+            value={book.name}
+            placeholder="name"
+            onChange={(e) => setBook({ ...book, name: e.target.value })}
+          />
+          <Input
+            value={book.description}
+            placeholder="description"
+            onChange={(e) => setBook({ ...book, description: e.target.value })}
+          />
+          <Input
+            value={book.isbn}
+            placeholder="isbn"
+            onChange={(e) => setBook({ ...book, isbn: e.target.value })}
+          />
+          <Input
+            value={book.author}
+            placeholder="author"
+            onChange={(e) => setBook({ ...book, author: e.target.value })}
+          />
+          <Input
+            type="file"
+            onChange={(e) =>
+              setBook({ ...book, file: e.target.files as FileList })
+            }
+          />
+          <Button onClick={() => handleAddBook.mutate(book)}>
+            Submit your Book
+          </Button>
+        </section>
+        <section>
+          {isLoading && <div>Loading...</div>}
+          {isError && <div>Error loading data</div>}
+          {books?.map((book: any) => (
+            <div
+              key={book.id}
+              className="bg-pink-100 border rounded-lg p-2 my-2"
+            >
+              <div>{book.name}</div>
+              <div>{book.description}</div>
+              <div>{book.isbn}</div>
+              <div>{book.author}</div>
+              <div>
+                <img
+                  src={`http://localhost:8080/${book.file}`}
+                  width={800}
+                  height={800}
+                />
+              </div>
+            </div>
+          ))}
+        </section>
+      </main>
+    </div>
+  );
+}
