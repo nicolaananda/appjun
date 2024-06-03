@@ -6,7 +6,8 @@ export interface IBook {
   author: string;
   file: null | FileList | string;
   isAvailable: boolean;
-  borrowedBy?: string; // Add this field
+  borrowedBy?: string;
+  borrowedAt?: Date;
 }
 export interface IUser {
   id: string;

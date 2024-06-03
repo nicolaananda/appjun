@@ -11,7 +11,7 @@ interface useAuthProps {
   password?: string;
 }
 
-export const useAuth = ({ name, email, password }: useAuthProps) => {
+export const useAuth = ({ name, email, password }: useAuthProps = {}) => {
   const navigate = useNavigate();
   const [user, setUser] = useAtom(userAtom);
   const [message, setMessage] = useState<string | null>(null);
@@ -27,12 +27,11 @@ export const useAuth = ({ name, email, password }: useAuthProps) => {
       if (!res.ok) {
         throw new Error(data.message || "Login failed");
       }
-      // Handle login success (e.g., save user data, set cookies, redirect)
       console.log("Login success:", data);
 
       localStorage.setItem("user", JSON.stringify(data.user));
       Cookies.set("token", data.token);
-      setUser(data.token);
+      setUser(data.user);
 
       navigate("/", { replace: true });
       return data;
@@ -54,7 +53,6 @@ export const useAuth = ({ name, email, password }: useAuthProps) => {
       if (!res.ok) {
         throw new Error(data.message || "Registration failed");
       }
-      // Handle registration success (e.g., save user data, set cookies, redirect)
       console.log("Registration success:", data);
       return data;
     } catch (error) {
@@ -64,16 +62,25 @@ export const useAuth = ({ name, email, password }: useAuthProps) => {
     }
   }
 
+  function handleLogout() {
+    localStorage.removeItem("user");
+    Cookies.remove("token");
+    setUser(null);
+    navigate("/login", { replace: true });
+  }
+
   useEffect(() => {
-    const user = localStorage.getItem("user");
-    if (user) {
-      setUser(JSON.parse(user));
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
     }
-  }, []);
+  }, [setUser]);
 
   return {
     handleLogin,
+    handleLogout,
     user,
     handleRegister,
+    message,
   };
 };

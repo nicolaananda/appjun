@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Header } from "@/components/sharedui/header";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster, toast } from "sonner";
-
 export default function Register() {
   const [user, setUser] = useState({ name: "", email: "", password: "" });
+  const navigate = useNavigate();
 
   const { handleRegister } = useAuth(user);
 
@@ -15,6 +15,7 @@ export default function Register() {
     const result = await handleRegister();
     if (result) {
       toast.success("Registration successful");
+      navigate("/login");
     } else {
       toast.error("Registration failed");
     }
@@ -54,13 +55,13 @@ export default function Register() {
           <div className="mt-6">
             <Button
               className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={handleRegister}
+              onClick={handleSubmit}
             >
               Register
             </Button>
           </div>
           <section className="mt-4 text-center text-gray-600">
-            Sudah punya akun?{" "}
+            Sudah punya akun?
             <Link to="/login" className="text-blue-500 hover:underline">
               Login
             </Link>

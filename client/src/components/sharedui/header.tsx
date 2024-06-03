@@ -15,7 +15,7 @@ export const Header = () => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   const [currentTime, setCurrentTime] = useState("");
-
+  console.log(user?.email);
   useEffect(() => {
     const updateTime = () => {
       const now = new Date();
@@ -110,7 +110,10 @@ export const Header = () => {
               >
                 Add Book
               </Link>
-              <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
+              <button
+                onClick={handleLogout}
+                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
+              >
                 Logout
               </button>
             </div>

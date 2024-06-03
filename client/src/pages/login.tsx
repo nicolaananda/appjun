@@ -17,9 +17,7 @@ export default function Login() {
     e.preventDefault();
     const data = await handleLogin();
     if (data && data.token) {
-      // Assuming you save the token in localStorage or cookies
       localStorage.setItem("token", data.token);
-      // navigate("/"); // Redirect to a protected route after successful login
     } else {
       setMessage(data.message || "Login failed. Please try again.");
     }

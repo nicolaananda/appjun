@@ -3,22 +3,26 @@ import { Book } from "../models/bookSchema";
 
 export const bookController = {
   getData: async (req: Request, res: Response) => {
-    const { search } = req.query;
+    try {
+      const { search } = req.query;
 
-    const CLAUSES = search
-      ? {
-          $or: [
-            { name: { $regex: search as string, $options: "i" } },
-            { description: { $regex: search as string, $options: "i" } },
-            { author: { $regex: search as string, $options: "i" } },
-          ],
-        }
-      : {};
+      const CLAUSES = search
+        ? {
+            $or: [
+              { name: { $regex: search as string, $options: "i" } },
+              { description: { $regex: search as string, $options: "i" } },
+              { author: { $regex: search as string, $options: "i" } },
+            ],
+          }
+        : {};
 
-    const allBooks = await Book.find(CLAUSES);
-
-    return res.json(allBooks);
+      const allBooks = await Book.find(CLAUSES);
+      return res.json(allBooks);
+    } catch (error) {
+      return res.status(500).json({ message: "Error fetching books", error });
+    }
   },
+
   createData: async (req: Request, res: Response) => {
     try {
       const { name, description, isbn, author } = req.body;
@@ -33,6 +37,7 @@ export const bookController = {
         isbn,
         author,
         file: req.file?.originalname,
+        isAvailable: true,
       });
 
       const saved = await createBook.save();
@@ -41,29 +46,61 @@ export const bookController = {
       return res.status(500).json({ message: "Error creating book", error });
     }
   },
-  getSingleData: async (req: Request, res: Response) => {
-    const { id } = req.params;
 
-    const book = await Book.findById(id);
-    return res.json(book);
+  getSingleData: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const book = await Book.findById(id);
+      if (!book) {
+        return res.status(404).json({ message: "Book not found" });
+      }
+      return res.json(book);
+    } catch (error) {
+      return res.status(500).json({ message: "Error fetching book", error });
+    }
   },
 
   updateData: async (req: Request, res: Response) => {
-    const { id } = req.params;
-
     try {
-      // Logic to update book based on bookId
+      const { id } = req.params;
+
       const updateBook = await Book.findByIdAndUpdate(
         id,
-        { isAvailable: false },
-        { new: true } // This option returns the updated document
+        {
+          isAvailable: false,
+          borrowedAt: new Date(),
+        },
+        { new: true }
       );
 
       if (!updateBook) {
         return res.status(404).json({ message: "Book not found" });
       }
 
-      return res.json(updateBook);
+      return res.json({ message: "Book updated", data: updateBook });
+    } catch (error) {
+      return res.status(500).json({ message: "Error updating book", error });
+    }
+  },
+  returnData: async (req: Request, res: Response) => {
+    try {
+      const { id } = req.params;
+
+      const updateBook = await Book.findByIdAndUpdate(
+        id,
+        {
+          isAvailable: true,
+          borrowedAt: new Date(),
+        },
+        { new: true }
+      );
+
+      if (!updateBook) {
+        return res.status(404).json({ message: "Book not found" });
+      }
+
+      return res.json({ message: "Book updated", data: updateBook });
     } catch (error) {
       return res.status(500).json({ message: "Error updating book", error });
     }

@@ -42,9 +42,16 @@ export const bookServices = {
     const res = await fetch(`${API_URL}/books/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        /* update fields here */
-      }),
+      body: JSON.stringify({}),
+    });
+    const data = (await res.json()) as IBook;
+    return data;
+  },
+  returnBook: async (id: string): Promise<IBook> => {
+    const res = await fetch(`${API_URL}/books/${id}/return`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({}),
     });
     const data = (await res.json()) as IBook;
     return data;
