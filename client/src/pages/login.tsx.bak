@@ -6,17 +6,17 @@ import { Header } from "@/components/sharedui/header";
 import { useAuth } from "@/hooks/useAuth";
 import { Toaster, toast } from "sonner";
 
-export default function Register() {
-  const [user, setUser] = useState({ name: "", email: "", password: "" });
+export default function Login() {
+  const [user, setUser] = useState({ email: "", password: "" });
 
-  const { handleRegister } = useAuth(user);
+  const { handleLogin } = useAuth(user);
 
   const handleSubmit = async () => {
-    const result = await handleRegister();
+    const result = await handleLogin();
     if (result) {
-      toast.success("Registration successful");
+      toast.success("Login successful");
     } else {
-      toast.error("Registration failed");
+      toast.error("Login failed");
     }
   };
 
@@ -27,18 +27,13 @@ export default function Register() {
       <section className="flex items-center justify-center min-h-screen bg-gray-100">
         <div className="w-full max-w-md p-8 bg-white rounded-lg shadow-md">
           <section className="mb-8 text-center">
-            <h2 className="text-2xl font-bold mb-2">Register</h2>
-            <p className="text-gray-600">Buat akunmu untuk pinjam buku</p>
+            <h2 className="text-2xl font-bold mb-2">Login</h2>
+            <p className="text-gray-600">Masuk akunmu untuk pinjam buku</p>
           </section>
           <div className="space-y-4">
             <Input
-              placeholder="Name"
-              className="w-full px-4 py-2 border rounded-md"
-              value={user.name}
-              onChange={(e) => setUser({ ...user, name: e.target.value })}
-            />
-            <Input
               placeholder="Email"
+              type="email"
               className="w-full px-4 py-2 border rounded-md"
               value={user.email}
               onChange={(e) => setUser({ ...user, email: e.target.value })}
@@ -54,15 +49,15 @@ export default function Register() {
           <div className="mt-6">
             <Button
               className="w-full py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-              onClick={handleRegister}
+              onClick={handleSubmit}
             >
-              Register
+              Login
             </Button>
           </div>
           <section className="mt-4 text-center text-gray-600">
-            Sudah punya akun?{" "}
-            <Link to="/login" className="text-blue-500 hover:underline">
-              Login
+            Belum punya akun?{" "}
+            <Link to="/register" className="text-blue-500 hover:underline">
+              Daftar
             </Link>
           </section>
         </div>
