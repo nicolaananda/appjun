@@ -7,7 +7,7 @@ const bookSchema = new Schema({
   author: String,
   file: String,
   isAvailable: { type: Boolean, default: true },
-  borrowedBy: { type: String, default: null }, // Add this field
+  // borrowedBy: { type: String, default: null }, // Add this field
 });
 
 export const Book = model("book", bookSchema);

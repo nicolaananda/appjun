@@ -99,7 +99,7 @@ export const Header = () => {
               style={{ top: "100%", left: "auto" }}
             >
               <Link
-                to="/profile"
+                to="#"
                 className="block px-4 py-2 text-gray-800 hover:bg-gray-200"
               >
                 Profile
@@ -110,10 +110,7 @@ export const Header = () => {
               >
                 Add Book
               </Link>
-              <button
-                onClick={handleLogout}
-                className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200"
-              >
+              <button className="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-200">
                 Logout
               </button>
             </div>
