@@ -18,6 +18,7 @@ app.use(express.urlencoded({ extended: true })); //read formData
 app.use(express.static("public"));
 app.use(cors({ origin: ["http://localhost:5173"] }));
 app.use("/books", bookRouter);
+app.use("/add-book", bookRouter);
 app.use("/auth", authRouter);
 
 app.get("/", (req, res) => res.json({ message: "Hello World!" }));
